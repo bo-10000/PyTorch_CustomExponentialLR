@@ -1,5 +1,7 @@
-# PyTorch_ExponentialLRWarmUpRestarts
-extension for warmup restart of pytorch exponential learning rate scheduler
+# PyTorch_CustomExponentialLR
+extension of pytorch exponential learning rate scheduler
+- can use learning rate warmup
+- can use periodic learning rate schedule
 
 ## Usage
 
