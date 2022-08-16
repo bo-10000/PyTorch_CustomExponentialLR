@@ -4,10 +4,10 @@ extension for warmup restart of pytorch exponential learning rate scheduler
 ## Usage
 
 ```python
-from custom_scheduler import ExponentialLRWarmUpRestarts
+from custom_scheduler import CustomExponentialLR
 
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-scheduler = ExponentialLRWarmUpRestarts(optimizer, gamma=0.97, warmup_steps=5)
+scheduler = CustomExponentialLR(optimizer, base_lr=0.0001, max_lr=0.001, step_size_down=40, step_size_up=10)
 
 for epoch in epochs:
     for x, target in dataloader:
@@ -39,33 +39,16 @@ def visualize_scheduler(optimizer, scheduler, epochs):
     
     return lrs
 
-from torch.optim.lr_scheduler import LambdaLR
-
-class ExponentialLRWarmUpRestarts(LambdaLR):
-    """Decays the learning rate of each parameter group by gamma every epoch.
-    When last_epoch=-1, sets initial lr as lr.
-    Args:
-        optimizer (Optimizer): Wrapped optimizer.
-        gamma (float): Multiplicative factor of learning rate decay.
-        last_epoch (int): The index of last epoch. Default: -1.
-        warmup_steps (int): number of epochs for warmup
-    """
-    def __init__(self, optimizer, gamma, last_epoch=-1, warmup_steps=0):
-        def lr_lambda(step):
-            if step < warmup_steps:
-                return float(step) / float(max(1.0, warmup_steps))
-            else:
-                return gamma**(step-warmup_steps)
-        super(ExponentialLRWarmUpRestarts, self).__init__(optimizer, lr_lambda, last_epoch=last_epoch)
+from custom_scheduler import CustomExponentialLR
     
 import torch
 import torch.optim as optim
 
 epochs = 100
 optimizer = optim.SGD([torch.tensor(1)], lr=0.001, momentum=0.9)
-scheduler = ExponentialLRWarmUpRestarts(optimizer, 0.97, -1, 5)
+scheduler = CustomExponentialLR(optimizer, base_lr=0.0001, max_lr=0.001, step_size_down=40, step_size_up=10)
 
 lrs = visualize_scheduler(optimizer, scheduler, epochs)
 ```
 
-![image](https://user-images.githubusercontent.com/55170796/184324061-0e02b309-a591-4851-a47c-42630cb3e187.png)
+![image](https://user-images.githubusercontent.com/55170796/184799523-1489bee7-016d-4ede-8aa5-376a70bd154f.png)
